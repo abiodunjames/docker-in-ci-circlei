@@ -12,6 +12,7 @@ jobs:
       - run:
           name: Run tests
           command: docker-compose exec -T app pytest .
+
   build_push_to_registry:
     docker:
       - image: cimg/base:2021.07
@@ -20,7 +21,13 @@ jobs:
           name: login to hub.docker.com
           command: echo ${DOCKER_TOKEN} | docker login --username ${DOCKER_USERNAME} --password-stdin
       - checkout
-
+      - run:
+          name: Build docker image
+          command: docker build -t abiodunjames/example-app .
+      - run:
+          name: Push docker image
+          command: docker push abiodunjames/example-app
+          
 workflows:
   version: 2
   test_build_and_push_to_registry:
