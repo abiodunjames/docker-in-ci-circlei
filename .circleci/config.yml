@@ -1,0 +1,36 @@
+version: 2.1
+
+jobs:
+  tests:
+    docker:
+      - image: cimg/base:2021.07
+    steps:
+      - checkout
+      - run:
+          name: Start the test environment
+          command: docker-compose  up -d --build
+      - run:
+          name: Run tests
+          command: docker-compose exec -T app pytest .
+  build_push_to_registry:
+    docker:
+      - image: cimg/base:2021.07
+    steps:
+      - run:
+          name: login to hub.docker.com
+          command: echo ${DOCKER_TOKEN} | docker login --username ${DOCKER_USERNAME} --password-stdin
+      - checkout
+
+workflows:
+  version: 2
+  test_build_and_push_to_registry:
+    jobs:
+      - test:
+          name: Run tests
+      - deploy:
+          name: Push to docker registry
+          context:
+            - dockerhub
+          filters:
+            branches:
+              only: master
