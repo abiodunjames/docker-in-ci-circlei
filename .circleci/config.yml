@@ -13,7 +13,7 @@ jobs:
           command: docker-compose  up -d --build
       - run:
           name: Run tests
-          command: docker-compose exec -T app pytest .
+          command: docker-compose exec app pytest .
 
   build_push_to_registry:
     docker:
@@ -40,6 +40,8 @@ workflows:
           name: Run tests
       - build_push_to_registry:
           name: Push to docker registry
+          requires:
+            - test
           filters:
             branches:
               only: master
