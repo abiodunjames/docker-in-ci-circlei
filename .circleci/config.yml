@@ -19,12 +19,12 @@ jobs:
     docker:
       - image: cimg/base:2021.07
     steps:
+      - checkout
       - setup_remote_docker:
           version: 19.03.13
       - run:
           name: login to hub.docker.com
           command: echo ${DOCKER_TOKEN} | docker login --username ${DOCKER_USERNAME} --password-stdin
-      - checkout
       - run:
           name: Build docker image
           command: docker build -t abiodunjames/example-app .
@@ -36,8 +36,7 @@ workflows:
   version: 2
   test_build_and_push_to_registry:
     jobs:
-      - test:
-          name: Run tests
+      - test
       - build_push_to_registry:
           name: Push to docker registry
           requires:
