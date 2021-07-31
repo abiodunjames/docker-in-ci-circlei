@@ -40,8 +40,6 @@ workflows:
           name: Run tests
       - build_push_to_registry:
           name: Push to docker registry
-          context:
-            - dockerhub
           filters:
             branches:
               only: master
